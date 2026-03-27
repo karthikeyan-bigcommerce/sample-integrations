@@ -1,0 +1,12 @@
+{
+  "name": "lancer-mock-apis",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",   
+  "scripts": {
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0"
+  }
+}
