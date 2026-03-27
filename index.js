@@ -1,43 +1,20 @@
-import { app } from "@azure/functions";
+const { app } = require('@azure/functions');
 
-console.log("Functions loaded");
+// Import modular handlers
+const creditLimit = require('./src/functions/creditLimit');
+const stock = require('./src/functions/stock');
 
-// STOCK API
-app.http("creditLimitApi", {
-  methods: ["POST"],
-  authLevel: "function",
-  route: "credit-limit",
-  handler: async (request, context) => {
-
-    const body = await request.json();
-
-    return {
-      status: 200,
-      jsonBody: {
-        customerIds: body.productCodes,
-        creditLimit: 5000,
-        available: 3200
-      }
-    };
-  }
+// Register APIs
+app.http('creditLimitApi', {
+    methods: ['GET', 'POST'],
+    authLevel: 'function',
+    route: 'credit-limit',
+    handler: creditLimit
 });
 
-// CREDIT LIMIT API
-app.http("creditLimitApi", {
-  methods: ["POST"],
-  authLevel: "function",
-  route: "credit-limit",
-  handler: async (request, context) => {
-
-    const body = await request.json();
-
-    return {
-      status: 200,
-      jsonBody: {
-        customerIds: body.productCodes,
-        creditLimit: 5000,
-        available: 3200
-      }
-    };
-  }
+app.http('stockApi', {
+    methods: ['GET', 'POST'],
+    authLevel: 'function',
+    route: 'stock',
+    handler: stock
 });
