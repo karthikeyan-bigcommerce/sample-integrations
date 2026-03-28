@@ -1,27 +1,41 @@
-import { tasks } from "@trigger.dev/sdk/v3";
+const { app } = require("@azure/functions");
 
-export async function bigcommerceWebhook(request, context) {
-  try {
-    const body = await request.json();
+app.http("bigcommerceWebhookApi", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "bigcommerce/webhook",
+  handler: async (request, context) => {
+    try {
+      const body = await request.json();
 
-    context.log(" BigCommerce webhook received");
-    context.log("Payload:", body);
+      context.log("BigCommerce webhook received");
+      context.log("Payload:", body);
 
-    // 👉 Trigger Trigger.dev task
-    await tasks.trigger("bigcommerce-webhook", body);
+      // 🔥 Call Trigger.dev via API
+      await fetch("https://api.trigger.dev/api/v1/events", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.TRIGGER_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: "bigcommerce-order",
+          payload: body
+        })
+      });
 
-    context.log(" Sent to Trigger.dev");
+      return {
+        status: 200,
+        jsonBody: { success: true }
+      };
 
-    return {
-      status: 200,
-      jsonBody: { success: true },
-    };
-  } catch (error) {
-    context.log(" Error:", error);
+    } catch (error) {
+      context.log("Error:", error);
 
-    return {
-      status: 500,
-      jsonBody: { error: "Webhook processing failed" },
-    };
+      return {
+        status: 500,
+        jsonBody: { error: "Webhook failed" }
+      };
+    }
   }
-}
+});
