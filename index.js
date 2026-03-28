@@ -3,6 +3,8 @@ const { app } = require('@azure/functions');
 // Import modular handlers
 const creditLimit = require('./src/functions/creditLimit');
 const stock = require('./src/functions/stock');
+import { bigcommerceWebhook } from "./src/functions/bigcommerceWebhook.js";
+
 
 // Register APIs
 app.http('creditLimitApi', {
@@ -17,4 +19,11 @@ app.http('stockApi', {
     authLevel: 'function',
     route: 'stock',
     handler: stock
+});
+
+app.http('bigcommerceWebhookAPI', {
+  methods: ['POST'],
+  authLevel: 'function',
+  route: 'bigcommerce/webhook',
+  handler: bigcommerceWebhook
 });
