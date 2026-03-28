@@ -6,6 +6,7 @@
     "start": "func start"
   },
   "dependencies": {
-    "@azure/functions": "^4.0.0"
+    "@azure/functions": "^4.0.0",
+    "@trigger.dev/sdk": "^4.4.3"
   }
 }
